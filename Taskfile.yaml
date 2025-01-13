@@ -1,0 +1,14 @@
+version: "3"
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  config-mysql:
+    desc: Up Mysql
+    cmds:
+      - MYSQL_PWD=mysqlroot mysql --host 127.0.0.1 --port 3326 --user root < ./lib/schema.sql
+
+  default:
+    cmds:
+      - task --list-all
