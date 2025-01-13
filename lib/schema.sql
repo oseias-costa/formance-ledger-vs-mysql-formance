@@ -11,6 +11,16 @@ CREATE TABLE ledger.TransactionType (
   UNIQUE KEY TransactionType_UNIQUE (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (1, "V2_ACCOUNT_RECEIVE", "Envio de pontos");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (2, "V2_EXCHANGE", "Troca por prêmio");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (3, "V2_CHARGEBACK", "Estorno de prêmio");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (4, "V2_ACCOUNT_SEND", "Envio de pontos");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (5, "V2_ADD_POINTS", "Compra de pontos");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (6, "V2_REMOVE_POINTS", "Remoção de pontos");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (7, "V2_USER_TO_VENDOR", "Estorno pagamento incorreto");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (8, "V2_POINTS_FROM_USER", "Estorno pagamento incorreto");
+INSERT INTO ledger.TransactionType (id, `key`, description) VALUES (9, "V2_CREDIT_BY_API", "Envio de pontos");
+
 CREATE TABLE ledger.Transaction (
   id int unsigned NOT NULL AUTO_INCREMENT,
   transactionTypeId int unsigned NOT NULL,

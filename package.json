@@ -6,12 +6,14 @@
   "author": "Oséias Costa <oseiasc2@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^22.10.5",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
   },
   "dependencies": {
     "@faker-js/faker": "^9.3.0",
     "axios": "^1.7.9",
-    "formance-numscript-generator": "^0.3.0"
+    "formance-numscript-generator": "^0.3.0",
+    "mysql2": "^3.12.0"
   }
 }
