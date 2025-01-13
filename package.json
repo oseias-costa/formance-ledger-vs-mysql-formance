@@ -8,5 +8,10 @@
   "devDependencies": {
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.3.0",
+    "axios": "^1.7.9",
+    "formance-numscript-generator": "^0.3.0"
   }
 }
