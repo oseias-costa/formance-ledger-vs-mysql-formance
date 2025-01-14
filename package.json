@@ -5,6 +5,9 @@
   "repository": "git@github.com:oseias-costa/formance-ledger-vs-mysql-formance.git",
   "author": "Oséias Costa <oseiasc2@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+  },
   "devDependencies": {
     "@types/node": "^22.10.5",
     "ts-node-dev": "^2.0.0",

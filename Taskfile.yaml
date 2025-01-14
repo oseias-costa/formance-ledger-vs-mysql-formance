@@ -12,3 +12,26 @@ tasks:
   default:
     cmds:
       - task --list-all
+      -
+  setup:
+    desc: "Set up the ledger environment with Docker Compose"
+    cmds:
+      - docker-compose up -d
+    silent: false
+
+    clean:
+      desc: "Clean up the Docker environment"
+      cmds:
+        - docker-compose down
+      silent: false
+
+  formance:test:
+    desc: "Run test and keep containers runing"
+    deps:
+      - setup
+    cmds:
+      - task setup
+      - npm run build
+      - node ./dist/transactionFormanceGenerator.js 
+        done
+  silent: true
