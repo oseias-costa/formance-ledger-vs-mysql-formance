@@ -1,13 +1,15 @@
 import { fakerPT_BR as faker } from '@faker-js/faker';
 import { Transaction } from './types';
 import { formanceParser } from './numscriptParser';
-import { createTransaction, startLedger } from './formance.api';
+import { createTransaction, createTransactions, startLedger } from './formance.api';
+import { createMysqlTransaction, createQueryMysql } from './mysql';
 
 async function main() {
 
   const transactions = [];
   const companies: string[] = [];
-
+  const CHUNK_SIZE = 10;
+  const CHUNKS = 3
 
   for (let i = 1; i <= 100; i++) {
     const transaction: Transaction = {
@@ -41,34 +43,36 @@ async function main() {
   const users = [];
 
 
-  for (let i = 0; i < 3; i++) {
+   let countTransactions = 0
+
+  for (let i = 0; i < CHUNKS; i++) {
+    const parsedTransactionsFormance= [];
+    const parsedTransactionsMysql = [];
 
     const user = faker.string.uuid();
     users.push(user);
 
-    const promises = [];
-    for (let j = 0; j < 1000; j++) {
+    for (let j = 0; j < CHUNK_SIZE; j++) {
+      countTransactions++;
       const transaction: Transaction = {
-        id: j,
+        id: countTransactions,
         transactionType: 'V2_ACCOUNT_SEND',
         reference: `v2:transaction:${faker.string.uuid()}`,
         description: faker.finance.transactionType(),
-        destination: `user:credit:${faker.string.uuid()}`,
+        destination: faker.string.uuid(),
         amount: faker.number.int({min: 5, max: 100}),
-        source: companies[0],
+        source: faker.helpers.arrayElement(companies),
       };
 
       const formanceTransaction = formanceParser(transaction);
-      promises.push(createTransaction(formanceTransaction));
+      const mysqlTransaction = createQueryMysql(transaction);
+      parsedTransactionsFormance.push(formanceTransaction);
+      parsedTransactionsMysql.push(mysqlTransaction);
     }
-    console.log(`Start of batch ${i}`)
-    const startTime = performance.now();
-    await Promise.all(promises);
-    const endTime = performance.now();
-    console.log(`End of batch ${i} - ${endTime - startTime}`);
+
+    const formanceTransactions = await createTransactions(parsedTransactionsFormance)
 
   }
+
 }
-
-
 main();

@@ -44,6 +44,8 @@ tasks:
       - setup
     cmds:
       - task setup
+      - task mysql:reset
+      - task formance:reset
       - npm run build
       - node ./dist/transactionFormanceGenerator.js
         done

@@ -17,12 +17,25 @@ async function createTransaction(transaction) {
     console.error(e.message);
   }
 }
-
+async function createTransactions(transactions) {
+  const promises = []
+  const startTime = performance.now();
+  transactions.map(async transaction => {
+    try {
+      promises.push(api.post(`/transactions`, transaction))
+    } catch (e) {
+      console.error(e.message);
+    }
+  })
+  await Promise.all(promises);
+  const endtime = performance.now();
+  return endtime - startTime;
+}
 async function getBalance(account: string) {
   const data = await api.post(`/`, {
     source: "account",
   });
 }
 
-export { createTransaction, startLedger };
+export { createTransaction, startLedger, createTransactions };
 
