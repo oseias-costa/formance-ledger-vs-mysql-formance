@@ -29,7 +29,7 @@ tasks:
   setup:
     desc: "Set up the ledger environment with Docker Compose"
     cmds:
-      - docker-compose up -d
+      - docker compose up -d
     silent: false
 
     clean:
@@ -67,3 +67,10 @@ tasks:
     cmds:
       - task mysql:reset
       - task formance:reset
+
+  setup:environment:
+    desc: Set up and initialize script
+    cmds:
+      - yarn
+      - task setup
+      - task run

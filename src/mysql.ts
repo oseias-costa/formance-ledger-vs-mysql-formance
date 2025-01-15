@@ -38,13 +38,9 @@ export const createQueryMysql = ({
 };
 
 export const createMysqlTransaction = async (query: string) => {
-  const conn = await pool.getConnection();
-
   try {
     await pool.query(query);
   } catch (err) {
     console.log("error: ", err);
   }
-
-  pool.releaseConnection(conn);
 };

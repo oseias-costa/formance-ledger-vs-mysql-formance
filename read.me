@@ -1,0 +1,45 @@
+
+# Ledger Performance Benchmark: Formance vs MySQL
+
+This project benchmarks the performance of Formance Ledger and MySQL by populating millions of transactions. It evaluates read and write performance as the transaction volume increases.
+
+
+
+## Setup enviroment
+
+To set up the environment with docker compose and start the script, simply type:
+
+```bash
+  task setup:environment
+```
+
+## Setup enviroment manually
+
+If you want to do it manually, type:
+
+```bash
+  yarn install
+  docker compose up -d
+  yarn tsc && node dist/index.js
+```
+
+## Run the script
+
+For initialize the script type:
+
+```bash
+  task run
+```
+
+## Reset databases
+
+For reset databases type:
+
+```bash
+  task formance:reset
+  task mysql:reset
+```
+## Autores
+
+- [@oseias-costa](https://www.github.com/oseias-costa)
+- [@Felipelussi](https://www.github.com/Felipelussi)
