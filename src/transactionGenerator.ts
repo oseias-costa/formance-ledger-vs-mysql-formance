@@ -6,11 +6,12 @@ import { formanceParser } from "./numscriptParser";
 export function transactionGenerator(
   companys: number,
   transactionsUsers: number,
+  lastId: number,
 ) {
   const mysqlQueries = [];
   const numscripts = [];
 
-  let id = 0;
+  let id = lastId ?? 0;
 
   for (let i = 1; i <= companys; i++) {
     id += 1;
@@ -23,7 +24,7 @@ export function transactionGenerator(
       reference: `v2:transaction:${faker.string.uuid()}`,
       description: "Compra de pontos",
       destination: company,
-      amount: 10000000,
+      amount: 20000000,
       source: "world",
     };
 
@@ -38,7 +39,7 @@ export function transactionGenerator(
         reference: `v2:transaction:${faker.string.uuid()}`,
         description: faker.finance.accountName(),
         destination: user,
-        amount: faker.number.float({ max: 15 }),
+        amount: faker.number.float({ max: 15, min: 1 }),
         source: company,
       };
 

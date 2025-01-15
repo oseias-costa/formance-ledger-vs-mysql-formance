@@ -8,10 +8,10 @@ export const pool = mysql.createPool({
   port: 3326,
   database: "ledger",
   waitForConnections: true,
-  connectionLimit: 50,
+  connectionLimit: 151,
   maxIdle: 10,
   idleTimeout: 60000,
-  queueLimit: 50,
+  queueLimit: 151,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
   multipleStatements: true,
@@ -38,9 +38,13 @@ export const createQueryMysql = ({
 };
 
 export const createMysqlTransaction = async (query: string) => {
+  const conn = await pool.getConnection();
+
   try {
     await pool.query(query);
   } catch (err) {
     console.log("error: ", err);
   }
+
+  pool.releaseConnection(conn);
 };
