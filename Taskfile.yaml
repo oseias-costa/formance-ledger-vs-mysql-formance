@@ -5,10 +5,23 @@ vars:
 
 tasks:
   config-mysql:
-    desc: Up Mysql
+    desc: Config Mysql
     cmds:
       - MYSQL_PWD=mysqlroot mysql --host 127.0.0.1 --port 3326 --user root < ./lib/schema.sql
 
+  mysql:reset:
+    desc: Reset Mysql
+    cmds:
+      - echo "Dropping the database"
+      - MYSQL_PWD=mysqlroot mysql --host 127.0.0.1 --port 3326 --user root -e "DROP DATABASE IF EXISTS ledger;"
+      - echo "Creating the database"
+      - task config-mysql
+
+  run:
+    desc: Run script
+    cmds:
+      - echo "Starting script"
+      - yarn tsc && node ./dist/index.js
   default:
     cmds:
       - task --list-all
@@ -32,6 +45,23 @@ tasks:
     cmds:
       - task setup
       - npm run build
-      - node ./dist/transactionFormanceGenerator.js 
+      - node ./dist/transactionFormanceGenerator.js
         done
   silent: true
+
+  formance:reset:
+    internal: false
+    cmds:
+      - echo "Dropping the ledger database"
+      - docker cp ledger_bkp.dump postgres:/tmp/mydb_dump.bin &> /dev/null
+      - |
+        docker exec postgres psql -U ledger -d postgres -c "DROP DATABASE IF EXISTS ledger;" &> /dev/null 
+        docker exec postgres psql -U ledger -d postgres -c "CREATE DATABASE ledger;" &> /dev/null
+        docker exec postgres pg_restore -U ledger -d ledger -v /tmp/mydb_dump.bin &> /dev/null
+    silent: true
+
+  reset:
+    desc: Reset Mysql and ledger
+    cmds:
+      - task mysql:reset
+      - task formance:reset

@@ -1,17 +1,17 @@
 import mysql from "mysql2/promise";
 import { Transaction, typeId } from "./types";
 
-const pool = mysql.createPool({
+export const pool = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "mysqlroot",
   port: 3326,
   database: "ledger",
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 50,
   maxIdle: 10,
   idleTimeout: 60000,
-  queueLimit: 0,
+  queueLimit: 50,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
   multipleStatements: true,

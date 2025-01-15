@@ -24,8 +24,6 @@ async function main() {
 
   multiPBar.start();
 
-  console.time("query-transactions");
-
   const batchesFormance = splitIntoBatches(numscripts, BATCHSIZE);
   const batchesMysql = splitIntoBatches(mysqlQueries, BATCHSIZE);
 
@@ -65,9 +63,6 @@ async function main() {
   } catch (err) {
     console.log("Mysql error: ", err);
   }
-
-  console.log(iteratorCount);
-  console.timeEnd("query-transactions");
 
   multiPBar.stop();
   console.log("Complete Inserts");

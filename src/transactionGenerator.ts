@@ -1,25 +1,51 @@
-import { fakerPT_BR as faker } from '@faker-js/faker';
-import { NumscriptTransaction } from 'formance-numscript-generator/src/types';
-import { generateNumscript } from 'formance-numscript-generator/src';
-import { Transaction, TransactionType } from './types';
+import { fakerPT_BR as faker } from "@faker-js/faker";
+import { Transaction } from "./types";
+import { createQueryMysql } from "./mysql";
+import { formanceParser } from "./numscriptParser";
 
-function main() {
+export function transactionGenerator(
+  companys: number,
+  transactionsUsers: number,
+) {
+  const mysqlQueries = [];
+  const numscripts = [];
 
-  const transactions = [];
-  const companies: string[] = [];
+  let id = 0;
 
+  for (let i = 1; i <= companys; i++) {
+    id += 1;
+    const company = faker.string.uuid();
+    const user = faker.string.uuid();
 
-  for (let j = 1; j <= 10; j++) {
     const transaction: Transaction = {
-      id: faker.number.int(),
-      transactionType: 'V2_ACCOUNT_SEND',
+      id,
+      transactionType: "V2_ADD_POINTS",
       reference: `v2:transaction:${faker.string.uuid()}`,
-      description: faker.finance.transactionType(),
-      destination: faker.string.uuid(),
+      description: "Compra de pontos",
+      destination: company,
       amount: 10000000,
-      source: 'world'
+      source: "world",
+    };
+
+    mysqlQueries.push(createQueryMysql(transaction));
+    numscripts.push(formanceParser(transaction));
+
+    for (let j = 1; j <= transactionsUsers; j++) {
+      id += 1;
+      const userTransaction: Transaction = {
+        id,
+        transactionType: "V2_ACCOUNT_SEND",
+        reference: `v2:transaction:${faker.string.uuid()}`,
+        description: faker.finance.accountName(),
+        destination: user,
+        amount: faker.number.float({ max: 15 }),
+        source: company,
+      };
+
+      mysqlQueries.push(createQueryMysql(userTransaction));
+      numscripts.push(formanceParser(transaction));
     }
-    transactions.push(transaction);
-    companies.push(transaction.destination)
   }
+
+  return { mysqlQueries, numscripts };
 }

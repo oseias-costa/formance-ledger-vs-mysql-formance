@@ -32,6 +32,31 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@opentf/cli-pbar@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@opentf/cli-pbar/-/cli-pbar-0.7.2.tgz#81db26aa1b6f6d6df0b91bb2f13cd22e6e32462b"
+  integrity sha512-1367ENsch7Ybs0dFMhTkPU3cQNETl/F9bETgJc1TeKUaZG61Fhs+rsIlm8eVtEd2qC3z0bYaZ3b5Bpehcr7C1Q==
+  dependencies:
+    "@opentf/cli-styles" "^0.15.0"
+    "@opentf/std" "^0.5.0"
+
+"@opentf/cli-styles@^0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/@opentf/cli-styles/-/cli-styles-0.15.0.tgz#840cd26bb394f791e9fe85e62a5364a08d09ca3c"
+  integrity sha512-7eETZJLNCyOq6sX4W5up8l1IdTu0sf1qDdsBJ2KHx9u4rh3drFmMgF1ZoZ92K9oCiqzKAGqpCCjuasnRWbNLOw==
+  dependencies:
+    "@opentf/std" "^0.3.0"
+
+"@opentf/std@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@opentf/std/-/std-0.3.0.tgz#c31a39b9932a55d1606fe865b8496927ecd26bc2"
+  integrity sha512-8Dtm0NqgoRi30FAUORo74SEruw2t2YlICxUy9nRpozzpbORCu4drpcAUq4stLsUY0bGHmFSZfZGpdA3wFamcwg==
+
+"@opentf/std@^0.5.0":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@opentf/std/-/std-0.5.1.tgz#a83ff08a034fe07305796a3c868a9725e317cab4"
+  integrity sha512-WIK/3Zwg8t6XeI3CJEEbK6wrC/uPkR7dk2DNWAhXqfql7NBCPjTb4NdXNSyChqMRY1qk+6E4/l32MaXk9x7+zA==
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.11.tgz#6ee46400685f130e278128c7b38b7e031ff5b2f2"
@@ -53,9 +78,9 @@
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
 "@types/node@^22.10.5":
-  version "22.10.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.5.tgz#95af89a3fb74a2bb41ef9927f206e6472026e48b"
-  integrity sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==
+  version "22.10.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.6.tgz#5c6795e71635876039f853cbccd59f523d9e4239"
+  integrity sha512-qNiuwC4ZDAUNcY47xgaSuS92cjf8JbSUoaKS77bmLG1rU7MlATVSiw/IlrjtIyyskXBZ8KkNfjK/P5na7rgXbQ==
   dependencies:
     undici-types "~6.20.0"
 
@@ -524,7 +549,7 @@ ts-node-dev@^2.0.0:
     ts-node "^10.4.0"
     tsconfig "^7.0.0"
 
-ts-node@^10.4.0:
+ts-node@^10.4.0, ts-node@^10.9.2:
   version "10.9.2"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.2.tgz#70f021c9e185bccdca820e26dc413805c101c71f"
   integrity sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==
