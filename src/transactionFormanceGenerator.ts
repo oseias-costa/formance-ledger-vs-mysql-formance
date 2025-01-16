@@ -3,8 +3,8 @@ import { Transaction } from "./types";
 import { createTransactions, startLedger } from "./formance.api";
 import { createMysqlTransactions } from "./mysql";
 
-const TOTAL_TRANSACTIONS = 400;
-const TOTAL_COMPANIES = 100;
+const TOTAL_TRANSACTIONS = 200;
+const TOTAL_COMPANIES = 200;
 const CHUNK_SIZE = 100;
 const CHUNKS = Math.ceil(TOTAL_TRANSACTIONS / CHUNK_SIZE);
 

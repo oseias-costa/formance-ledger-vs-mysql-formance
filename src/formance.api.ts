@@ -22,19 +22,17 @@ async function createTransaction(transaction) {
 }
 
 async function createTransactions(transactions: Transaction[]) {
-  // const promises = [];
   const startTime = performance.now();
-  transactions.map(async (transaction) => {
+
+  for (const transaction of transactions) {
     try {
-      createTransaction(formanceParser(transaction));
+      await api.post("/transactions", formanceParser(transaction));
     } catch (e) {
       console.error(e.message);
     }
-  });
-  // await Promise.all(promises);
+  }
+
   const endtime = performance.now();
-  console.log("Time Formance: ", endtime - startTime);
-  // return endtime - startTime;
 }
 
 async function getBalance(account: string) {
