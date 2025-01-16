@@ -1,80 +1,80 @@
-import { createTransaction, startLedger } from "./formance.api.js";
-import { createMysqlTransaction, pool } from "./mysql.js";
-import { transactionGenerator } from "./transactionGenerator";
+import { fakerPT_BR as faker } from "@faker-js/faker";
+import { Transaction } from "./types";
+import { createTransactions } from "./formance.api";
+import { createMysqlTransactions } from "./mysql";
 import { ProgressBar } from "@opentf/cli-pbar";
-import { splitIntoBatches } from "./utils";
 
-const BATCHSIZE = 10;
-const COMPANIES = 10;
-const TRASNSACTIONS_PER_USERS = 30000;
-const TOTAL_INSERTS = COMPANIES * TRASNSACTIONS_PER_USERS;
-const TOTAL_BAR = (TOTAL_INSERTS + BATCHSIZE) * 2;
+const TOTAL_TRANSACTIONS = 1000;
+const TOTAL_COMPANIES = 200;
+const CHUNK_SIZE = 50;
+const CHUNKS = Math.ceil(TOTAL_TRANSACTIONS / CHUNK_SIZE);
 
 async function main() {
-  const multiPBar = new ProgressBar({ size: "MEDIUM" });
-  console.time("transactions");
+  const pBar = new ProgressBar();
+  pBar.start({ total: TOTAL_TRANSACTIONS });
 
-  const lastMysqlId = await pool.query(
-    "SELECT `id`from ledger.`Transaction` ORDER BY `id` DESC LIMIT 1;",
-  );
+  let transactionsCount = 0;
+  const transactions = [];
+  const companies: string[] = [];
 
-  const { mysqlQueries, numscripts } = transactionGenerator(
-    COMPANIES,
-    TRASNSACTIONS_PER_USERS,
-    lastMysqlId ? lastMysqlId[0][0]?.id : 0,
-  );
+  for (let i = 1; i <= TOTAL_COMPANIES; i++) {
+    const transaction: Transaction = {
+      transactionType: "V2_ADD_POINTS",
+      reference: `v2:transaction:${faker.string.uuid()}`,
+      description: "Compra de pontos" + i,
+      destination: faker.string.uuid(),
+      amount: 10000000,
+      source: "world",
+    };
 
-  const batchesFormance = splitIntoBatches(numscripts, BATCHSIZE);
-  const batchesMysql = splitIntoBatches(mysqlQueries, BATCHSIZE);
-
-  const b1 = multiPBar.add({ total: batchesFormance.length * TOTAL_BAR });
-  const b2 = multiPBar.add({ total: batchesFormance.length + TOTAL_BAR });
-  const iteratorCount = { numscript: 0, mysql: 0 };
-
-  multiPBar.start();
-
-  try {
-    await startLedger();
-    for (const batch of batchesFormance) {
-      iteratorCount.numscript += 1;
-      // b1.update({ value: iteratorCount.numscript });
-
-      await Promise.all(
-        batch.map((transaction: string) => {
-          iteratorCount.numscript += 1;
-          b1.update({ value: iteratorCount.numscript });
-
-          return createTransaction(transaction);
-        }),
-      );
-    }
-  } catch (err) {
-    console.log("Formance error: ", err);
+    transactions.push(transaction);
+    companies.push(transaction.destination);
   }
 
   try {
-    for (const batch of batchesMysql) {
-      iteratorCount.mysql += 1;
-      // b2.update({ value: iteratorCount.mysql });
+    await Promise.all([
+      createMysqlTransactions(transactions),
+      createTransactions(transactions),
+    ]);
 
-      await Promise.all(
-        batch.map((transaction: string) => {
-          iteratorCount.mysql += 1;
-          b2.update({ value: iteratorCount.mysql });
-
-          return createMysqlTransaction(transaction);
-        }),
-      );
-    }
-  } catch (err) {
-    console.log("Mysql error: ", err);
+    console.log("transactions companies finished");
+  } catch (e) {
+    console.error(e);
   }
 
-  console.timeEnd("transactions");
-  multiPBar.stop();
-  console.log("Complete Inserts");
+  const users = [];
 
-  process.exit(0);
+  for (let i = 0; i < CHUNKS; i++) {
+    transactionsCount++;
+    let chunkTransactions = [];
+    pBar.update({ value: transactionsCount });
+
+    const user = faker.string.uuid();
+    users.push(user);
+
+    for (let j = 0; j < CHUNK_SIZE; j++) {
+      transactionsCount++;
+      pBar.update({ value: transactionsCount });
+
+      const transaction: Transaction = {
+        transactionType: "V2_ACCOUNT_SEND",
+        reference: `v2:transaction:${faker.string.uuid()}`,
+        description: faker.finance.transactionType(),
+        destination: faker.helpers.arrayElement(users),
+        amount: faker.number.int({ min: 1, max: 250 }),
+        source: faker.helpers.arrayElement(companies),
+      };
+
+      chunkTransactions.push(transaction);
+    }
+
+    await Promise.all([
+      createMysqlTransactions(chunkTransactions),
+      createTransactions(chunkTransactions),
+    ]);
+
+    pBar.stop();
+  }
+  console.log("Finished");
 }
-
 main();

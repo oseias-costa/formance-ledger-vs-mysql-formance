@@ -65,6 +65,10 @@ tasks:
         curl -X GET http://127.0.0.1:8080/test/transactions
     silent: true
 
+  formance:count-transactions:
+    desc: count tran
+    cmd: curl -I HEAD  http://127.0.0.1:8080/test/transactions
+
   reset:
     desc: Reset Mysql and ledger
     cmds:

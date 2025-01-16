@@ -1,10 +1,10 @@
 import mysql from "mysql2/promise";
 import { Transaction, typeId } from "./types";
 import { createTransactions } from "./formance.api";
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
-const filePath = path.join('./', 'mysqlResults.csv')
+const filePath = path.join("./", "mysqlResults.csv");
 export const pool = mysql.createPool({
   host: "localhost",
   user: "root",
@@ -99,7 +99,7 @@ export const createMysqlTransactions = async (transactions: Transaction[]) => {
 
   await conn.commit();
   const endTime = performance.now();
-  await fs.appendFile(filePath, `${endTime - startTime}\n`)
+  await fs.appendFile(filePath, `${endTime - startTime}\n`);
 };
 
 export const getLastTransaction = async (): Promise<number> => {
