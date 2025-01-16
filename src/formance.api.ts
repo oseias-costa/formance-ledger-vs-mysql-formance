@@ -1,17 +1,18 @@
-import axios from "axios";
-import { Transaction } from "./types";
-import { formanceParser } from "./numscriptParser";
-import fs from "fs/promises";
-import path from "path";
+import axios from 'axios';
+import { Transaction } from './types';
+import { formanceParser } from './numscriptParser';
+import fs from 'fs/promises';
+import path from 'path';
 
-const filePath = path.join("./", "formanceResults.csv");
+
+const filePath = path.join('./', 'formanceResults.csv')
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/v2/test",
+  baseURL: 'http://localhost:8080/v2/test',
 });
 
 async function startLedger() {
-  return axios.get("http://127.0.0.1:8080/test/transactions");
+  return axios.get('http://127.0.0.1:8080/test/transactions');
 }
 
 async function createTransaction(transaction) {
@@ -22,26 +23,25 @@ async function createTransaction(transaction) {
   }
 }
 
-async function createTransactions(transactions: Transaction[]) {
-  const parsedTransactions = transactions.map((transaction) =>
-    formanceParser(transaction),
-  );
+async function createTransactions(transactions: Transaction[], chunkNumber=0) {
+
+  const parsedTransactions = transactions.map((transaction) => formanceParser(transaction));
 
   const startTime = performance.now();
   for (const transaction of parsedTransactions) {
     try {
-      await api.post("/transactions", transaction);
+      await api.post('/transactions', transaction);
     } catch (e) {
       console.error(e.message);
     }
   }
   const endTime = performance.now();
-  await fs.appendFile(filePath, `${endTime - startTime}\n`);
+  await fs.appendFile(filePath, `${chunkNumber},${endTime - startTime}\n`)
 }
 
 async function getBalance(account: string) {
   const data = await api.post(`/`, {
-    source: "account",
+    source: 'account',
   });
 }
 
