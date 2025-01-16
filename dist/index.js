@@ -5,14 +5,14 @@ const mysql_js_1 = require("./mysql.js");
 const transactionGenerator_1 = require("./transactionGenerator");
 const cli_pbar_1 = require("@opentf/cli-pbar");
 const utils_1 = require("./utils");
-const BATCHSIZE = 3;
+const BATCHSIZE = 10;
 const COMPANIES = 10;
-const TRASNSACTIONS_PER_USERS = 3;
+const TRASNSACTIONS_PER_USERS = 30000;
 const TOTAL_INSERTS = COMPANIES * TRASNSACTIONS_PER_USERS;
 const TOTAL_BAR = (TOTAL_INSERTS + BATCHSIZE) * 2;
 async function main() {
     const multiPBar = new cli_pbar_1.ProgressBar({ size: "MEDIUM" });
-    console.time("mysql");
+    console.time("transactions");
     const lastMysqlId = await mysql_js_1.pool.query("SELECT `id`from ledger.`Transaction` ORDER BY `id` DESC LIMIT 1;");
     const { mysqlQueries, numscripts } = (0, transactionGenerator_1.transactionGenerator)(COMPANIES, TRASNSACTIONS_PER_USERS, lastMysqlId ? lastMysqlId[0][0]?.id : 0);
     const batchesFormance = (0, utils_1.splitIntoBatches)(numscripts, BATCHSIZE);
@@ -50,8 +50,7 @@ async function main() {
     catch (err) {
         console.log("Mysql error: ", err);
     }
-    console.timeEnd("mysql");
-    console.log(iteratorCount);
+    console.timeEnd("transactions");
     multiPBar.stop();
     console.log("Complete Inserts");
     process.exit(0);

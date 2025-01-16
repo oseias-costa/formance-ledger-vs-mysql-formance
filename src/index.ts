@@ -4,9 +4,9 @@ import { transactionGenerator } from "./transactionGenerator";
 import { ProgressBar } from "@opentf/cli-pbar";
 import { splitIntoBatches } from "./utils";
 
-const BATCHSIZE = 3;
+const BATCHSIZE = 10;
 const COMPANIES = 10;
-const TRASNSACTIONS_PER_USERS = 3;
+const TRASNSACTIONS_PER_USERS = 30000;
 const TOTAL_INSERTS = COMPANIES * TRASNSACTIONS_PER_USERS;
 const TOTAL_BAR = (TOTAL_INSERTS + BATCHSIZE) * 2;
 

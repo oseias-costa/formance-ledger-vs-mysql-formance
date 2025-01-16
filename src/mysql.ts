@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import { Transaction, typeId } from "./types";
+import { createTransactions } from "./formance.api";
 
 export const pool = mysql.createPool({
   host: "localhost",
@@ -43,4 +44,65 @@ export const createMysqlTransaction = async (query: string) => {
   } catch (err) {
     console.log("error: ", err);
   }
+};
+
+export const createMysqlTransactions = async (transactions: Transaction[]) => {
+  const conn = await pool.getConnection();
+
+  const startTime = performance.now();
+
+  try {
+    await conn.beginTransaction();
+
+    for (const transaction of transactions) {
+      const {
+        transactionType,
+        reference,
+        description,
+        amount,
+        source,
+        destination,
+      } = transaction;
+
+      const createTransaction = await conn.query(
+        `
+        INSERT INTO ledger.Transaction 
+        (transactionTypeId, reference, description) 
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE description = VALUES(description);`,
+        [typeId[transactionType], reference, description],
+      );
+
+      const transactionId =
+        createTransaction[0]["insertId"] === 0
+          ? 1
+          : createTransaction[0]["insertId"];
+
+      await conn.query(
+        `
+        INSERT INTO ledger.Movement 
+        (amount, source, destination, transactionId)
+        VALUES (?, ?, ?, ?);
+`,
+        [amount, source, destination, transactionId],
+      );
+    }
+  } catch (err) {
+    await conn.rollback();
+    console.log("error: ", err);
+  } finally {
+    conn.release();
+  }
+
+  await conn.commit();
+  const endtime = performance.now();
+  console.log("Time Mysql: ", endtime - startTime);
+};
+
+export const getLastTransaction = async (): Promise<number> => {
+  const lastTransaction = await pool.query(
+    "SELECT `id`from ledger.`Transaction` ORDER BY `id` DESC LIMIT 1;",
+  );
+
+  return lastTransaction ? lastTransaction[0][0]?.id : 0;
 };
