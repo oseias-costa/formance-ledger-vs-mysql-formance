@@ -47,7 +47,6 @@ tasks:
       - task setup
       - task mysql:reset
       - task formance:reset
-      - curl -X GET http://127.0.0.1:8080/test/transactions
       - npm run build
       - node ./dist/transactionFormanceGenerator.js
         done
@@ -62,7 +61,6 @@ tasks:
         docker exec postgres psql -U ledger -d postgres -c "DROP DATABASE IF EXISTS ledger;" &> /dev/null 
         docker exec postgres psql -U ledger -d postgres -c "CREATE DATABASE ledger;" &> /dev/null
         docker exec postgres pg_restore -U ledger -d ledger -v /tmp/mydb_dump.bin &> /dev/null
-        curl -X GET http://127.0.0.1:8080/test/transactions
     silent: true
 
   formance:count-transactions:

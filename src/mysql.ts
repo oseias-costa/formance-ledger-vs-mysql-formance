@@ -49,7 +49,7 @@ export const createMysqlTransaction = async (query: string) => {
   }
 };
 
-export const createMysqlTransactions = async (transactions: Transaction[]) => {
+export const createMysqlTransactions = async (transactions: Transaction[], chunkNumber = 0) => {
   const conn = await pool.getConnection();
 
   const startTime = performance.now();
@@ -99,7 +99,7 @@ export const createMysqlTransactions = async (transactions: Transaction[]) => {
 
   await conn.commit();
   const endTime = performance.now();
-  await fs.appendFile(filePath, `${endTime - startTime}\n`);
+  await fs.appendFile(filePath, `${chunkNumber},${endTime - startTime}\n`)
 };
 
 export const getLastTransaction = async (): Promise<number> => {

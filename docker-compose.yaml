@@ -18,6 +18,7 @@ services:
     networks:
       - ledger
 
+
   postgres:
     container_name: postgres
     image: "postgres:17-alpine"
@@ -33,6 +34,8 @@ services:
       POSTGRES_PASSWORD: ledger
       POSTGRES_DB: ledger
       PGDATA: /data/postgres
+    volumes:
+      - postgres-data:/data/postgres
     networks:
       - ledger
 
@@ -50,7 +53,9 @@ services:
       - 8080:3068
     environment:
       POSTGRES_URI: "postgresql://ledger:ledger@postgres/ledger?sslmode=disable"
-    volumes:
-      - ./volumes/postgres:/data/postgres
     networks:
       - ledger
+
+
+volumes:
+  postgres-data:
