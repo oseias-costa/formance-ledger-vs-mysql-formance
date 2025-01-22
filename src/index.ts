@@ -4,9 +4,9 @@ import { createTransactions } from "./formance.api";
 import { createMysqlTransactions } from "./mysql";
 import { ProgressBar } from "@opentf/cli-pbar";
 
-const TOTAL_TRANSACTIONS = 1000;
-const TOTAL_COMPANIES = 200;
-const CHUNK_SIZE = 50;
+const TOTAL_TRANSACTIONS = 1_000_000;
+const TOTAL_COMPANIES = 10_000;
+const CHUNK_SIZE = 10_000;
 const CHUNKS = Math.ceil(TOTAL_TRANSACTIONS / CHUNK_SIZE);
 
 async function main() {

@@ -1,8 +1,8 @@
 import mysql from "mysql2/promise";
 import { Transaction, typeId } from "./types";
-import { createTransactions } from "./formance.api";
 import fs from "fs/promises";
 import path from "path";
+import Decimal from "decimal.js";
 
 const filePath = path.join("./", "mysqlResults.csv");
 export const pool = mysql.createPool({
@@ -49,7 +49,10 @@ export const createMysqlTransaction = async (query: string) => {
   }
 };
 
-export const createMysqlTransactions = async (transactions: Transaction[], chunkNumber = 0) => {
+export const createMysqlTransactions = async (
+  transactions: Transaction[],
+  chunkNumber = 0,
+) => {
   const conn = await pool.getConnection();
 
   const startTime = performance.now();
@@ -99,7 +102,11 @@ export const createMysqlTransactions = async (transactions: Transaction[], chunk
 
   await conn.commit();
   const endTime = performance.now();
-  await fs.appendFile(filePath, `${chunkNumber},${endTime - startTime}\n`)
+
+  await fs.appendFile(
+    filePath,
+    `${new Decimal(endTime).minus(startTime).dividedBy(10000)}\n`,
+  );
 };
 
 export const getLastTransaction = async (): Promise<number> => {
